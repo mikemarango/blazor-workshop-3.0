@@ -1,0 +1,66 @@
+﻿@page "/checkout"
+@inject HttpClient HttpClient
+@inject OrderState OrderState
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
+
+<div class="main">
+    <AuthorizeView Context="authContext">
+        <NotAuthorized>
+            <h3>Redirecting you...</h3>
+        </NotAuthorized>
+        <Authorized>
+            <EditForm Model="OrderState.Order.DeliveryAddress" OnValidSubmit="PlaceOrder">
+                <div class="checkout-cols">
+                    <div class="checkout-order-details">
+                        <h4>Review order</h4>
+                        <OrderReview Order="OrderState.Order" />
+                    </div>
+                    <div class="checkout-delivery-address">
+                        <h4>Delivery to...</h4>
+                        <AddressEditor Address="OrderState.Order.DeliveryAddress" />
+                    </div>
+                </div>
+                <button class="checkout-button btn btn-warning">
+                    Place order
+                </button>
+                <DataAnnotationsValidator />
+            </EditForm>
+        </Authorized>
+    </AuthorizeView>
+</div>
+
+@code {
+    [CascadingParameter] public Task<AuthenticationState> AuthenticationState { get; set; }
+    string currentOrder = "currentOrder";
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authenticationState = await AuthenticationState;
+        if (!authenticationState.User.Identity.IsAuthenticated)
+        {
+            await LocalStorage.SetAsync<Order>(JSRuntime, currentOrder, OrderState.Order);
+            NavigationManager.NavigateTo("user/signin?redirectUri=/checkout", true);
+        }
+        if (!OrderState.Order.Pizzas.Any())
+        {
+            var savedOrder = await LocalStorage.GetAsync<Order>(JSRuntime, currentOrder);
+            if (savedOrder != null)
+            {
+                OrderState.ReplaceOrder(savedOrder);
+                await LocalStorage.DeleteAsync<Order>(JSRuntime, currentOrder);
+            }
+            else
+            {
+                NavigationManager.NavigateTo("");
+            }
+        }
+    }
+
+    async Task PlaceOrder()
+    {
+        int orderId = await HttpClient.PostJsonAsync<int>("orders", OrderState.Order);
+        OrderState.ResetOrder();
+        NavigationManager.NavigateTo($"myorders/{orderId}");
+    }
+}
