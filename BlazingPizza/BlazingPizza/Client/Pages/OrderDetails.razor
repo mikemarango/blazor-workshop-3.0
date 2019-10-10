@@ -1,6 +1,7 @@
 ﻿@page "/myorders/{orderId:int}"
 @using System.Threading
 @inject HttpClient HttpClient
+@implements IDisposable
 
 <div class="main">
     @if (invalidOrder)
@@ -44,6 +45,10 @@
         await PollForUpdatesAsync();
     }
 
+    /// <summary>
+    /// Ensures polling cancellation
+    /// </summary>
+    /// <returns></returns>
     async Task PollForUpdatesAsync()
     {
         cancellationTokenSource = new CancellationTokenSource();
@@ -64,5 +69,13 @@
             StateHasChanged();
             await Task.Delay(4000);
         }
+    }
+
+    /// <summary>
+    /// Stops polling once an order is removed from the display
+    /// </summary>
+    void IDisposable.Dispose()
+    {
+        cancellationTokenSource?.Cancel();
     }
 }
