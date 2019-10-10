@@ -2,6 +2,7 @@
 @inject HttpClient HttpClient
 @inject OrderState OrderState
 @inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
 
 <div class="main">
     <AuthorizeView Context="authContext">
@@ -31,13 +32,28 @@
 
 @code {
     [CascadingParameter] public Task<AuthenticationState> AuthenticationState { get; set; }
+    string currentOrder = "currentOrder";
 
     protected override async Task OnInitializedAsync()
     {
         var authenticationState = await AuthenticationState;
         if (!authenticationState.User.Identity.IsAuthenticated)
         {
+            await LocalStorage.SetAsync<Order>(JSRuntime, currentOrder, OrderState.Order);
             NavigationManager.NavigateTo("user/signin?redirectUri=/checkout", true);
+        }
+        if (!OrderState.Order.Pizzas.Any())
+        {
+            var savedOrder = await LocalStorage.GetAsync<Order>(JSRuntime, currentOrder);
+            if (savedOrder != null)
+            {
+                OrderState.ReplaceOrder(savedOrder);
+                await LocalStorage.DeleteAsync<Order>(JSRuntime, currentOrder);
+            }
+            else
+            {
+                NavigationManager.NavigateTo("");
+            }
         }
     }
 
