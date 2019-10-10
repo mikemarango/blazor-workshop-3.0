@@ -26,7 +26,7 @@ namespace BlazingPizza.Server.Controllers
         public async Task<List<OrderWithStatus>> GetOrders()
         {
             var orders = await Context.Orders
-                //.Where(o => o.UserId == GetUserId())
+                .Where(o => o.UserId == GetUserId())
                 .Include(o => o.Pizzas).ThenInclude(p => p.Special)
                 .Include(o => o.Pizzas).ThenInclude(p => p.Toppings).ThenInclude(t => t.Topping)
                 .OrderByDescending(o => o.CreatedTime)
@@ -40,7 +40,7 @@ namespace BlazingPizza.Server.Controllers
         {
             var order = await Context.Orders
                 .Where(o => o.OrderId == orderId)
-                //.Where(o => o.UserId == GetUserId())
+                .Where(o => o.UserId == GetUserId())
                 .Include(o => o.Pizzas).ThenInclude(p => p.Special)
                 .Include(o => o.Pizzas).ThenInclude(p => p.Toppings).ThenInclude(t => t.Topping)
                 .SingleOrDefaultAsync();
@@ -55,7 +55,7 @@ namespace BlazingPizza.Server.Controllers
         {
             order.CreatedTime = DateTime.Now;
             order.DeliveryLocation = new LatLong(51.5001, -0.1239);
-            //order.UserId = GetUserId();
+            order.UserId = GetUserId();
 
             Context.Orders.Attach(order);
             await Context.SaveChangesAsync();
