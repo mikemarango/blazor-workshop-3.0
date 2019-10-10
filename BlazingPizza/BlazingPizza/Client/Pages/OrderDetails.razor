@@ -1,4 +1,6 @@
 ﻿@page "/myorders/{orderId:int}"
+@using System.Threading
+@inject HttpClient HttpClient
 
 <div class="main">
     TODO: Show details order @OrderId
@@ -6,4 +8,35 @@
 
 @code {
     [Parameter] public int OrderId { get; set; }
+    OrderWithStatus orderWithStatus;
+    bool invalidOrder;
+    CancellationTokenSource cancellationTokenSource;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        cancellationTokenSource?.Cancel();
+        await PollForUpdatesAsync();
+    }
+
+    async Task PollForUpdatesAsync()
+    {
+        cancellationTokenSource = new CancellationTokenSource();
+        while (!cancellationTokenSource.IsCancellationRequested)
+        {
+            try
+            {
+                invalidOrder = false;
+                orderWithStatus = await HttpClient.GetJsonAsync<OrderWithStatus>($"orders/{OrderId}");
+            }
+            catch (Exception ex)
+            {
+                invalidOrder = true;
+                cancellationTokenSource.Cancel();
+                Console.WriteLine(ex);
+                throw;
+            }
+            StateHasChanged();
+            await Task.Delay(4000);
+        }
+    }
 }
