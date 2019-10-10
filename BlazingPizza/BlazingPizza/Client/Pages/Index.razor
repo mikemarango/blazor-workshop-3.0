@@ -2,6 +2,7 @@
 @inject HttpClient HttpClient
 @inject OrderState OrderState
 @inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
 
 <div class="main">
     <ul class="pizza-cards">
@@ -29,7 +30,7 @@
             @foreach (var configuredPizza in Order.Pizzas)
             {
                 <PizzaItem Pizza="configuredPizza"
-                           OnRemoved="() => OrderState.RemoveConfiguredPizza(configuredPizza)" />
+                           OnRemoved="() => RemovePizza(configuredPizza)" />
             }
         </div>
     }
@@ -61,6 +62,14 @@
     protected override async Task OnInitializedAsync()
     {
         specials = await HttpClient.GetJsonAsync<List<PizzaSpecial>>("specials");
+    }
+
+    async Task RemovePizza(Pizza configuredPizza)
+    {
+        if (await JSRuntime.Confirm($"Remove {configuredPizza.Special.Name} pizza from the order?"))
+        {
+            OrderState.RemoveConfiguredPizza(configuredPizza);
+        }
     }
 
 }
