@@ -4,7 +4,7 @@
 @inject NavigationManager NavigationManager
 
 <div class="main">
-    <EditForm Model="Order.DeliveryAddress">
+    <EditForm Model="OrderState.Order.DeliveryAddress" OnValidSubmit="PlaceOrder">
         <div class="checkout-cols">
             <div class="checkout-order-details">
                 <h4>Review order</h4>
@@ -12,24 +12,21 @@
             </div>
             <div class="checkout-delivery-address">
                 <h4>Delivery to...</h4>
-                <AddressEditor Address="Order.DeliveryAddress" />
+                <AddressEditor Address="OrderState.Order.DeliveryAddress" />
             </div>
         </div>
-        <button class="checkout-button btn btn-warning" @onclick="PlaceOrder">
+        <button class="checkout-button btn btn-warning">
             Place order
         </button>
         <DataAnnotationsValidator />
-        <ValidationSummary />
     </EditForm>
 </div>
 
 @code {
-    Order Order => OrderState.Order;
     async Task PlaceOrder()
     {
-        int orderId = await HttpClient.PostJsonAsync<int>("orders", Order);
+        int orderId = await HttpClient.PostJsonAsync<int>("orders", OrderState.Order);
         OrderState.ResetOrder();
         NavigationManager.NavigateTo($"myorders/{orderId}");
     }
-
 }
