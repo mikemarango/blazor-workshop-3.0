@@ -19,5 +19,10 @@ namespace BlazingPizza.Client.Services
         {
             return httpClient.GetJsonAsync<List<PizzaSpecial>>("specials");
         }
+
+        public Task<List<Topping>> GetToppingsAsync()
+        {
+            return httpClient.GetJsonAsync<List<Topping>>("toppings");
+        }
     }
 }
