@@ -1,5 +1,5 @@
 ﻿@page "/"
-@inject HttpClient HttpClient
+@inject PizzaClient PizzaClient
 
 <div class="main">
     <ul class="pizza-cards">
@@ -24,7 +24,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        specials = await HttpClient.GetJsonAsync<List<PizzaSpecial>>("specials");
+        specials = await PizzaClient.GetSpecialsAsync();
     }
 }
 
