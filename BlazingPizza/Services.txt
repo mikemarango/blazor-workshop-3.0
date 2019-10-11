@@ -1,0 +1,2 @@
+Project calls a service instead direct data load from HttpClient
+Branch -> Gx - blazor-workshop-3.0 - GitHub
