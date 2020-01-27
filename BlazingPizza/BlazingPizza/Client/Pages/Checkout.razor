@@ -1,0 +1,23 @@
+﻿@page "/checkout"
+@inject OrderState OrderState
+@inject HttpClient HttpClient
+
+<div class="main">
+    <div class="checkout-cols">
+        <div class="checkout-order-details">
+            <h4>Review order</h4>
+            <OrderReview Order="Order" />
+        </div>
+    </div>
+    <button class="checkout-button btn btn-warning" @onclick="PlaceOrder">
+        Place order
+    </button>
+</div>
+
+@code {
+    Order Order => OrderState.Order;
+    async Task PlaceOrder()
+    {
+        var orderId = await HttpClient.PostJsonAsync<int>("order", Order);
+    }
+}
