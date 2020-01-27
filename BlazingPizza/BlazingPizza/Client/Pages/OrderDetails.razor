@@ -1,6 +1,7 @@
 ﻿@page "/myorders/{orderId:int}"
 @using  System.Threading
 @inject HttpClient HttpClient
+@implements IDisposable
 
 <div class="main">
     @if (invalidOrder)
@@ -66,5 +67,10 @@
 
             await Task.Delay(4000);
         }
+    }
+
+    void IDisposable.Dispose()
+    {
+        cancellationTokenSource?.Cancel();
     }
 }
