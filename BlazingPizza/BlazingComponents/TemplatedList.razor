@@ -1,0 +1,11 @@
+﻿@typeparam TItem
+
+@code {
+    List<TItem> items;
+    [Parameter] public Func<Task<List<TItem>>> Loader { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        items = await Loader();
+    }
+}

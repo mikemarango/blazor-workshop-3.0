@@ -15,6 +15,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="3.1.1" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\BlazingComponents\BlazingComponents.csproj" />
     <ProjectReference Include="..\Shared\BlazingPizza.Shared.csproj" />
   </ItemGroup>
 
