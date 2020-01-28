@@ -7,6 +7,7 @@
     <link rel="icon" href="data:;base64,=" />
     <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" />
     <link href="css/site.css" rel="stylesheet" />
+    <link rel="manifest" href="js/manifest.json" />
     <link href="_content/BlazingPizza.Components/content/leaflet/leaflet.css" rel="stylesheet" />
     <title>Blazing Pizza</title>
 </head>
@@ -18,7 +19,9 @@
     <script src="_framework/blazor.webassembly.js"></script>
     <!--<script src="_content/Cloudcrate.AspNetCore.Blazor.Browser.Storage/Storage.js"></script>-->
     <script src="_content/BlazingPizza.Components/content/localStorage.js"></script>
+    <script src="_content/BlazingPizza.ComponentsLibrary/pushNotifications.js"></script>
     <script src="_content/BlazingPizza.Components/content/deliveryMap.js"></script>
     <script src="_content/BlazingPizza.Components/content/leaflet/leaflet.js"></script>
+    <script>navigator.serviceWorker.register('js/service-worker.js')</script>
 </body>
 </html>
