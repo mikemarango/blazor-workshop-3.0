@@ -3,19 +3,23 @@
 @inject HttpClient HttpClient
 
 <div class="main">
-    <div class="checkout-cols">
-        <div class="checkout-order-details">
-            <h4>Review order</h4>
-            <OrderReview Order="Order" />
+    <EditForm Model="Order.DeliveryAddress">
+        <div class="checkout-cols">
+            <div class="checkout-order-details">
+                <h4>Review order</h4>
+                <OrderReview Order="Order" />
+            </div>
+            <div class="checkout-delivery-address">
+                <h4>Deliver to...</h4>
+                <DeliveryAddress Address="Order.DeliveryAddress" />
+            </div>
         </div>
-        <div class="checkout-delivery-address">
-            <h4>Deliver to...</h4>
-            <DeliveryAddress Address="Order.DeliveryAddress" />
-        </div>
-    </div>
-    <button class="checkout-button btn btn-warning" @onclick="PlaceOrder">
-        Place order
-    </button>
+        <button class="checkout-button btn btn-warning" @onclick="PlaceOrder">
+            Place order
+        </button>
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+    </EditForm>
 </div>
 
 @code {
